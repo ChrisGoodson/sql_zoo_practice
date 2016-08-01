@@ -553,7 +553,7 @@ SELECT teacher.name, dept.name
            ON (teacher.dept=dept.id)
 
 
-3)Use a different JOIN so that all teachers are listed. 
+3)Use a different JOIN so that all teachers are listed.
 
 SELECT teacher.name, dept.name
  FROM teacher LEFT JOIN dept
@@ -598,4 +598,8 @@ WHEN dept = 3 THEN 'Art'
 ELSE 'None' END
 FROM teacher
 
-11)
+# SELF JOIN
+
+1) How many stops are in the database.
+
+SELECT *  FROM stops
