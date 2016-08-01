@@ -353,7 +353,7 @@ SELECT mdate,
 
  # More JOIN operations
 
-1) List the films where the yr is 1962 [Show id, title] 
+1) List the films where the yr is 1962 [Show id, title]
 SELECT id, title
  FROM movie
  WHERE yr=1962
@@ -377,8 +377,8 @@ FROM movie
 WHERE id IN (11768, 11955, 21191)
 
 5)What id number does the actress 'Glenn Close' have?
-SELECT id 
-FROM actor  
+SELECT id
+FROM actor
 WHERE name = 'Glenn Close'
 
 6)What is the id of the film 'Casablanca'
@@ -442,11 +442,98 @@ HAVING COUNT(title)=(SELECT MAX(c) FROM
 
 SELECT DISTINCT title, name
 
-FROM movie JOIN casting 
+FROM movie JOIN casting
 ON movie.id=movieid
-JOIN actor  
+JOIN actor
 ON actorid=actor.id
 
 WHERE movieid IN (
-  SELECT movieid FROM actor JOIN casting ON (actor.id = casting.actorid) 
+  SELECT movieid FROM actor JOIN casting ON (actor.id = casting.actorid)
   WHERE name='Julie Andrews') AND  ord = 1
+
+  14) Obtain a list, in alphabetical order, of actors who've had at least 30 starring roles.
+
+  SELECT name
+FROM movie JOIN casting
+  ON movie.id=movieid
+  JOIN actor
+  ON actorid=actor.id
+WHERE ord = 1
+GROUP BY 1
+HAVING COUNT(ord) >= 30
+
+15) List the films released in the year 1978 ordered by the number of actors in the cast.
+
+SELECT DISTINCT title, COUNT(actorid) AS num_actors
+FROM movie JOIN casting
+  ON movie.id=movieid
+  JOIN actor
+  ON actorid=actor.id
+WHERE yr = 1978
+GROUP BY title
+ORDER BY num_actors DESC
+
+16) List all the people who have worked with 'Art Garfunkel'.
+
+SELECT DISTINCT(name)
+FROM movie JOIN casting
+  ON movie.id=movieid
+  JOIN actor
+  ON actorid=actor.id
+WHERE movieid IN
+(SELECT movieid
+FROM movie JOIN casting
+  ON movie.id=movieid
+  JOIN actor
+  ON actorid=actor.id
+WHERE name = 'Art Garfunkel') AND name != 'Art Garfunkel'
+
+# SUM and COUNT
+
+1) Show the total population of the world.
+
+SELECT SUM(population)
+FROM world
+
+2) List all the continents - just once each.
+
+SELECT DISTINCT continent
+FROM world
+
+3) Give the total GDP of Africa
+
+SELECT SUM(gdp)
+FROM world
+WHERE continent = 'Africa'
+
+4) How many countries have an area of at least 1000000
+
+SELECT COUNT(*)
+FROM world
+WHERE area >= 1000000
+
+5) What is the total population of ('France','Germany','Spain')
+
+SELECT SUM(population)
+FROM world
+WHERE name IN ('France', 'Germany', 'Spain')
+
+6) For each continent show the continent and number of countries.
+
+SELECT continent, COUNT(*)
+FROM world
+GROUP BY continent
+
+7) For each continent show the continent and number of countries with populations of at least 10 million.
+
+SELECT continent, COUNT(*)
+FROM world
+WHERE population >= 10000000
+GROUP BY continent
+
+8) List the continents that have a total population of at least 100 million.
+
+SELECT continent
+FROM world
+GROUP BY continent
+HAVING SUM(population) >= 100000000
